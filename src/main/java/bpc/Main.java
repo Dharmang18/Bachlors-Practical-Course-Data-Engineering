@@ -69,6 +69,5 @@ public class Main {
             System.err.println("General error occurred:");
             e.printStackTrace();
         }
-
     }
 }
