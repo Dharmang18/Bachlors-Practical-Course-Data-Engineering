@@ -67,7 +67,9 @@ public class Main {
             e.printStackTrace();
         } catch (Exception e) {
             System.err.println("General error occurred:");
+
             e.printStackTrace();
         }
     }
+
 }
