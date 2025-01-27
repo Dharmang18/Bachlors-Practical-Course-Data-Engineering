@@ -1,0 +1,13 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+
+
+SELECT ?class (COUNT(?entity) AS ?count)
+WHERE {
+    ?entity rdf:type dbo:Person .
+    ?entity rdf:type ?class .
+    FILTER (?class != dbo:Person && STRSTARTS(STR(?class), "http://dbpedia.org/ontology/"))
+}
+GROUP BY ?class
+ORDER BY DESC(?count)

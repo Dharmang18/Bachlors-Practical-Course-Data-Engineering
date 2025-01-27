@@ -1,0 +1,29 @@
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT (AVG(xsd:decimal(?shortPredicatesCount) / xsd:decimal(?totalTriples)) AS ?averageRatio)
+WHERE {
+  # Count the total number of triples for each scientist
+  {
+    SELECT ?entity (COUNT(?predicate) AS ?totalTriples)
+    WHERE {
+      ?entity rdf:type dbo:PopulatedPlace .
+      ?entity ?predicate ?object .
+    }
+    GROUP BY ?entity
+  }
+  
+  # Count the number of triples with dbp predicates of length 1 for each scientist
+  {
+    SELECT ?entity (COUNT(?predicate) AS ?shortPredicatesCount)
+    WHERE {
+      ?entity rdf:type dbo:PopulatedPlace .
+      ?entity ?predicate ?object .
+      FILTER (STRSTARTS(STR(?predicate), "http://dbpedia.org/property/") &&
+              STRLEN(REPLACE(STR(?predicate), "http://dbpedia.org/property/", "")) = 1)
+    }
+    GROUP BY ?entity
+  }
+}

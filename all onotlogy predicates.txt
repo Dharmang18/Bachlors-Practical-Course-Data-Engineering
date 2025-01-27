@@ -1,0 +1,20 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT (COUNT(DISTINCT ?predicate) AS ?totalDBOPredicatesForScientists)
+WHERE {
+  {
+    ?scientist ?predicate ?o .
+    ?scientist rdf:type owl:Thing .
+    FILTER STRSTARTS(STR(?predicate), "http://dbpedia.org/ontology/")
+  }
+  UNION
+  {
+    ?s ?predicate ?scientist .
+    ?scientist rdf:type owl:Thing .
+    FILTER STRSTARTS(STR(?predicate), "http://dbpedia.org/ontology/")
+  }
+}
+

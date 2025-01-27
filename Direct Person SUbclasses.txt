@@ -1,0 +1,19 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?class (COUNT(?subject) AS ?count)
+WHERE {
+  # Query DBpedia for subclasses of dbo:Person
+  SERVICE <http://dbpedia.org/sparql> {
+    ?class rdfs:subClassOf dbo:Person .
+    FILTER(STRSTARTS(STR(?class), "http://dbpedia.org/ontology/"))
+  }
+  
+  # Use the subclasses to filter subjects in the local dataset
+  ?subject rdf:type dbo:Person .
+  ?subject rdf:type ?class .
+}
+GROUP BY ?class
+ORDER BY DESC(?count)

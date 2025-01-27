@@ -1,0 +1,26 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+SELECT 
+    ?scientist 
+    (COUNT(DISTINCT ?dboPredicate) AS ?dboCount)
+    (COUNT(DISTINCT ?dbpPredicate) AS ?dbpCount)
+    (COUNT(DISTINCT ?dboPredicate) / COUNT(DISTINCT ?dbpPredicate) AS ?dboToDbpRatio)
+WHERE {
+    ?scientist a dbo:Scientist .  # Restrict to entities of type Scientist
+    {
+        ?scientist ?dboPredicate ?object .
+        FILTER(STRSTARTS(STR(?dboPredicate), "http://dbpedia.org/ontology/")) .
+        FILTER(!STRSTARTS(STR(?dboPredicate), "http://dbpedia.org/ontology/wikiPageWikiLinkText")) .
+        FILTER(!STRSTARTS(STR(?dboPredicate), "http://dbpedia.org/ontology/deathYear")) .
+        FILTER(!STRSTARTS(STR(?dboPredicate), "http://dbpedia.org/ontology/birthYear")) .
+    }
+    UNION
+    {
+        ?scientist ?dbpPredicate ?object .
+        FILTER(STRSTARTS(STR(?dbpPredicate), "http://dbpedia.org/property/"))
+    }
+}
+GROUP BY ?scientist
+ORDER BY DESC(?dboToDbpRatio)  # Optional: Sort by ratio, descending

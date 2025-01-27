@@ -1,0 +1,16 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?class (COUNT(DISTINCT ?entity) AS ?entityCount)
+WHERE {
+    # Get subclasses of owl:Thing from the DBpedia endpoint
+    SERVICE <http://dbpedia.org/sparql> {
+        ?class rdfs:subClassOf owl:Thing .
+    }
+
+    # Match entities in your local dataset that belong to these subclasses
+    ?entity rdf:type ?class .
+}
+GROUP BY ?class
+ORDER BY DESC(?entityCount)
