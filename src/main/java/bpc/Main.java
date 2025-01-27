@@ -18,6 +18,7 @@ import org.rdfhdt.hdtjena.HDTGraph;
 public class Main {
     public static void main(String[] args) {
         try {
+
             System.out.println("Initializing Fuseki Server...");
 
             // Load the 2015 dataset
